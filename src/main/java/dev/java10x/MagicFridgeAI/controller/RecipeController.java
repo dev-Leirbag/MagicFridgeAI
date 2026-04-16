@@ -1,13 +1,23 @@
 package dev.java10x.MagicFridgeAI.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import dev.java10x.MagicFridgeAI.services.ChatGptService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping
+@RequiredArgsConstructor
 public class RecipeController {
-}
 
-//TODO: 1° Desafio = Ler a documentação da API do GPT
-//TODO: 2° Desafio = Ler a documentação do WebCliente
-//TODO: 3° Desafio = Transformar a API KEY em uma variavel de ambiente
+    private final ChatGptService chatGptService;
+
+    @GetMapping("/generate")
+    public Mono<ResponseEntity<String>> generatRecipe(){
+        return chatGptService.genereteRecipe()
+                .map(recipe -> ResponseEntity.ok(recipe))
+                .defaultIfEmpty(ResponseEntity.noContent().build());
+    }
+
+}
